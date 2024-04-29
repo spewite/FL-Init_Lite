@@ -1,3 +1,4 @@
+import configparser
 import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -9,6 +10,8 @@ import threading
 import shlex
 import demucs.separate  # Asegúrate de tener esta biblioteca instalada y configurada correctamente
 
+config = configparser.ConfigParser()
+
 # Obtener la ruta del directorio donde se encuentra el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,20 +19,66 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 config_file = os.path.join(script_dir, 'settings.ini')
 
 # Cargar o crear configuración
-config = ConfigParser()
 default_download_path = os.path.expanduser('~')
 
 if not os.path.exists(config_file):
-    config['PATHS'] = {'download_path': default_download_path}
+
+    config.add_section('PATHS')
+    # Añadir múltiples entradas a la sección 'PATHS'
+    config['PATHS']['download_path'] = default_download_path
+    config['PATHS']['fl_template_path'] = default_download_path  # Ejemplo de una nueva clave
+
     with open(config_file, 'w') as f:
         config.write(f)
-else:
-    config.read(config_file)
+        
+    # Mostrar un mensaje al usuario indicando que el archivo de configuración no se encontró
+    messagebox.showinfo("Archivo de Configuración No Encontrado",
+                        "No se ha encontrado el archivo de configuración, lo cual podría indicar que la instalación es nueva o que el archivo ha sido eliminado.\n\n"
+                        "Puedes cambiar los ajustes predeterminados desde el menú 'Archivo' en la barra de menús.")
 
 # Función para guardar la configuración
 def save_config():
     with open(config_file, 'w') as f:
         config.write(f)
+
+def get_config(section, key, default_value):
+    try:
+        # Intenta obtener el valor de la configuración
+        return config.get(section, key)
+    except (configparser.NoSectionError, configparser.NoOptionError):
+        # Si la sección o clave no existen, devuelve el valor por defecto
+        if section not in config.sections():
+            config.add_section(section)
+        config.set(section, key, default_value)
+        save_config()  # Guarda el cambio en el archivo de configuración
+        return default_value
+
+
+# Ahora puedes acceder a la configuración de manera segura
+download_path = get_config('PATHS', 'download_path', os.path.expanduser('~'))
+fl_template_path = get_config('PATHS', 'fl_template_path', os.path.expanduser('~'))
+
+
+# Funcion para mostrar los datos del settings.ini
+def show_config():
+    # Leer el archivo de configuración si existe
+    if config.read(config_file):
+        info = []
+        for section in config.sections():
+            info.append(f"[{section}]")
+            for key in config[section]:
+                info.append(f"{key} = {config[section][key]}")
+            info.append("")  # Añadir línea en blanco entre secciones
+        info_text = "\n".join(info)
+        messagebox.showinfo("Configuración Actual", info_text)
+    else:
+        messagebox.showerror("Error", "No se pudo cargar el archivo de configuración.")
+
+def validate_path(path):
+    if not os.path.isdir(path):
+        messagebox.showerror("Error de Ruta", "La ruta especificada no existe. Por favor, ingresa una ruta válida.")
+        return False
+    return True
 
 # Función para abrir el directorio en el explorador de archivos
 def open_folder(path):
@@ -105,8 +154,14 @@ def download_video():
 
 # Crear el proyecto de FL Studio
 def create_flp(project_path, project_name):
+    # Verificar si se ha seleccionado una plantilla antes de continuar
+    template_name = template_combobox.get()
+    if not template_name:
+        messagebox.showinfo("Información", "No se seleccionó ninguna plantilla FLP. Se creará la estructura sin el archivo .flp")
+        return  # Salir de la función si no hay plantilla seleccionada
+    
     try:
-        fl_template_path = os.path.join(config['PATHS']['fl_template_path'], template_combobox.get())
+        fl_template_path = os.path.join(config['PATHS']['fl_template_path'], template_name)
         project = pyflp.parse(fl_template_path)
         pyflp.save(project, os.path.join(project_path, f'{project_name}.flp'))
     except Exception as e:
@@ -128,11 +183,12 @@ def update_template_list():
 # Función para seleccionar carpeta
 def select_folder():
     path = filedialog.askdirectory(initialdir=config['PATHS']['download_path'])
-    if path:
+    if path and validate_path(path):
         location_entry.delete(0, tk.END)
         location_entry.insert(0, path)
         config['PATHS']['download_path'] = path
         save_config()
+
 
 # Función para cambiar la ruta del proyecto solo para esta vez.
 def select_folder_temporal():
@@ -212,10 +268,21 @@ name_entry.grid(row=2, column=1, padx=10, pady=5)
 browse_button = tk.Button(input_frame, text="Examinar", command=select_folder_temporal)
 browse_button.grid(row=1, column=2, padx=10, pady=5)
 
-# Template Selection Combobox
+def show_flp_info(event):
+    messagebox.showinfo("Información de Plantilla FLP",
+                        "Selecciona una plantilla FLP de la lista para usarla en tu proyecto.\n"
+                        "Si dejas este campo vacío, el proyecto se creará sin una plantilla FLP.\n"
+                        "Si no ves ninguna plantilla aquí, configura un directorio de Plantillas FLP (desde el Menu Bar), guarda algun archivo .flp en el directorio.\n")
+
+# Configurar el Combobox de selección de plantilla y el ícono de información
 tk.Label(input_frame, text="Plantilla FLP:").grid(row=3, column=0, sticky='w', padx=10, pady=5)
 template_combobox = ttk.Combobox(input_frame, width=67)
 template_combobox.grid(row=3, column=1, padx=10, pady=5)
+update_template_list()  # Cargar las plantillas iniciales
+
+info_flp_label = tk.Label(input_frame, text="ℹ️", fg="blue", cursor="hand2")
+info_flp_label.grid(row=3, column=2, padx=5, pady=5)
+info_flp_label.bind("<Button-1>", show_flp_info)
 
 update_template_list()  # Llamar a la función para cargar las plantillas iniciales
 # Output Path Label
@@ -238,10 +305,21 @@ info_label.bind("<Button-1>", show_info)
 
 info_label.grid(row=6, column=1, sticky='w')
 
+#Para validar una entrada manual, puedes vincular un evento que dispare la validación cuando el usuario termine de introducir la ruta:
+def on_path_entry_exit(event):
+    path = location_entry.get()
+    if not validate_path(path):
+        location_entry.delete(0, tk.END)  # Opcionalmente borrar la entrada inválida
+        location_entry.insert(0, config['PATHS']['download_path'])  # Restaurar el último valor válido
+
+# Vinculando el evento de pérdida de foco o de presión de tecla Enter
+location_entry.bind('<FocusOut>', on_path_entry_exit)
+location_entry.bind('<Return>', on_path_entry_exit)
+
+
 # Actualizar el label con la ruta de salida cada vez que cambien los campos de entrada
 location_entry.bind('<KeyRelease>', update_output_path_label)
 name_entry.bind('<KeyRelease>', update_output_path_label)
-
 
 # Menú
 menubar = tk.Menu(root)
@@ -252,5 +330,10 @@ file_menu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Archivo", menu=file_menu)
 file_menu.add_command(label="Cambiar ubicación de salida por defecto", command=select_folder)
 file_menu.add_command(label="Cambiar ubicación de la plantilla FLP", command=select_template)
+
+# Menú Ver
+view_menu = tk.Menu(menubar, tearoff=0)
+menubar.add_cascade(label="Ver", menu=view_menu)
+view_menu.add_command(label="Mostrar Configuración", command=show_config)
 
 root.mainloop()
