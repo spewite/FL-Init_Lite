@@ -1,11 +1,13 @@
 import os
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog, messagebox
+from tkinter import ttk, filedialog, messagebox
 from pytube import YouTube
 from configparser import ConfigParser
 from moviepy.editor import AudioFileClip
 import pyflp
+import threading
+import shlex
+import demucs.separate  # Asegúrate de tener esta biblioteca instalada y configurada correctamente
 
 # Obtener la ruta del directorio donde se encuentra el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,11 +42,29 @@ def update_output_path_label(*args):
     output_path = os.path.join(project_location, project_name)
     output_path_label.config(text=f"Ruta de salida: {output_path}")
 
+
+# Añadir esta función que proporcionaste para separar los stems
+def separate_audio(file_path, output_dir, project_name):
+    final_output_dir = os.path.join(output_dir, project_name, 'assets')
+    os.makedirs(final_output_dir, exist_ok=True)
+    # Aquí simplemente se define el modelo y la salida se establece directamente
+    command = f'--mp3 -n mdx_extra --out "{final_output_dir}" "{file_path}"'
+    args = shlex.split(command)
+    # Inicia el proceso de separación en un hilo para evitar bloquear la GUI
+    def run_separation():
+        print("Proceso en curso", "Extracción de stems en progreso...")
+        demucs.separate.main(args)
+        messagebox.showinfo(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
+        print(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
+    threading.Thread(target=run_separation).start()
+
 # Función para descargar solo audio y convertirlo a MP3
+# Modificar la función de descarga para incluir la separación de stems
 def download_video():
     url = url_entry.get()
     project_location = location_entry.get()
     project_name = name_entry.get()
+    separate_stems = separate_stems_var.get()
     
     if not url or not project_location or not project_name:
         messagebox.showerror("Error", "Todos los campos son necesarios")
@@ -53,30 +73,34 @@ def download_video():
     try:
         yt = YouTube(url)
         title = yt.title
-        # Limpieza del título para evitar problemas en el nombre del archivo
         safe_title = ''.join(char for char in title if char.isalnum() or char in " -_")
         
         project_path = os.path.join(project_location, project_name)
         assets_path = os.path.join(project_path, 'assets')
         os.makedirs(assets_path, exist_ok=True)
-        
-        audio_stream = yt.streams.filter(only_audio=True).first()  # Selecciona el mejor stream de audio
-        audio_file_path = audio_stream.download(output_path=assets_path, filename=f"{safe_title}.mp4")  # Guarda como .mp4
-        
-        # Convertir el archivo de audio a MP3
+
+        audio_stream = yt.streams.filter(only_audio=True).first()
+        audio_file_path = audio_stream.download(output_path=assets_path, filename=f"{safe_title}.mp4")
+
         mp3_path = os.path.join(assets_path, f'{safe_title}.mp3')
         audio_clip = AudioFileClip(audio_file_path)
+
         audio_clip.write_audiofile(mp3_path)
         audio_clip.close()
-        
-        # Opcional: eliminar el archivo original descargado
         os.remove(audio_file_path)
         
+        if separate_stems:
+            separate_audio(mp3_path, project_location, project_name)
+        
         create_flp(project_path, project_name)
+        open_folder(project_path)
 
-        open_folder(project_path)  # Abrir el directorio después de descargar y convertir
+        messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
+        print("Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
+
     except Exception as e:
         messagebox.showerror("Error", f"Error al descargar el audio: {str(e)}")
+        print(f"Excepción al escribir el archivo de audio: {e}")  # Esto imprimirá en la consola si es posible.
 
 
 # Crear el proyecto de FL Studio
@@ -124,19 +148,42 @@ def select_template():
         save_config()
         update_template_list()
 
+# Antes de iniciar la interfaz gráfica, imprimir el mensaje de bienvenida
+def print_welcome_message():
+    print("""
+    +------------------------------------+
+    |              FL INIT               |
+    +------------------------------------+
+    | Bienvenido al inicializador de FL  |
+    | Studio! Esta aplicación permite la |
+    | descarga de audio de YouTube y la  |
+    | separación de stems automatizada.  |
+    |                                    |
+    | La consola mostrará las barras de  |
+    | carga y el progreso de los         |
+    | procesos. Por favor, manténgala    |
+    | abierta durante la operación.      |
+    +------------------------------------+
+    """)
 
+# Llamar a la función antes del bucle principal de Tkinter
+print_welcome_message()
 
 # GUI setup
 root = tk.Tk()
 root.title("FL INIT")
 
+def show_info(event):
+    messagebox.showinfo("Información de Separación de Stems", "El tiempo requerido para la separación de stems puede variar significativamente en función de las especificaciones del hardware utilizado, especialmente la GPU. Un hardware más avanzado facilitará una mayor velocidad de procesamiento. Mi portatil con una gráfica integrada tarda 5 mins. Podrás ver el progreso de la separación en la terminal que se abre al ejectuar la aplicación. ")
+
 # Calcular posición para centrar la ventana
 window_width = 700
-window_height = 250
+window_height = 280
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 center_x = int(screen_width/2 - window_width/2)
 center_y = int(screen_height/2 - window_height/2)
+root.resizable(False, False)
 
 # Tamaño y posición de la ventana
 root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
@@ -180,9 +227,21 @@ output_path_label.grid(row=4, column=0, columnspan=2, pady=10)
 download_button = tk.Button(input_frame, text="DESCARGAR", command=download_video)
 download_button.grid(row=5, column=0, columnspan=2, pady=10)
 
+# Añadir checkbox y etiqueta de información
+separate_stems_var = tk.IntVar(value=0)  # Variable para el estado del checkbox
+separate_stems_checkbox = tk.Checkbutton(input_frame, text="Separar stems", variable=separate_stems_var)
+separate_stems_checkbox.grid(row=6, column=0, columnspan=2, pady=5, sticky='w')
+
+info_label = tk.Label(input_frame, text="ℹ️", fg="blue", cursor="hand2")
+info_label.grid(row=6, column=1, sticky='w')
+info_label.bind("<Button-1>", show_info)
+
+info_label.grid(row=6, column=1, sticky='w')
+
 # Actualizar el label con la ruta de salida cada vez que cambien los campos de entrada
 location_entry.bind('<KeyRelease>', update_output_path_label)
 name_entry.bind('<KeyRelease>', update_output_path_label)
+
 
 # Menú
 menubar = tk.Menu(root)
@@ -191,7 +250,7 @@ root.config(menu=menubar)
 # Menú Archivo
 file_menu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Archivo", menu=file_menu)
-file_menu.add_command(label="Cambiar ubicación de descarga", command=select_folder)
+file_menu.add_command(label="Cambiar ubicación de salida por defecto", command=select_folder)
 file_menu.add_command(label="Cambiar ubicación de la plantilla FLP", command=select_template)
 
 root.mainloop()
