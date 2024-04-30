@@ -29,12 +29,16 @@ echo Instalando dependencias...
 timeout /t 1 /nobreak >nul
 pip install -r ..\requirements.txt
 
-echo Creando accesos directo en el escritorio...
-timeout /t 1 /nobreak >nul
-cscript //nologo crear_acceso_directo_escritorio.vbs
-cls
+echo Creando accesos directo en la raiz del proyecto...
+timeout /t 2 /nobreak >nul
+cscript //nologo crear_acceso_directo_raiz.vbs
 
+echo Creando accesos directo en el escritorio...
+timeout /t 2 /nobreak >nul
+cscript //nologo crear_acceso_directo_escritorio.vbs
+
+cls
 echo Iniciando la aplicacion...
-timeout /t 1 /nobreak >nul
+timeout /t 3 /nobreak >nul
 call python ..\src\fl_init.py
 
