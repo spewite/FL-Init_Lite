@@ -28,7 +28,7 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 
 ## Instalación
 
-1. **Clonar el repositorio**: Descarga el repositorio y colócalo en un directorio fijo para evitar problemas de ruta.
+1. **Clonar el repositorio**: Descarga el repositorio y colócalo en un directorio definitivo.
 2. **Tener Python instalado**: Asegúrate de tener Python instalado en tu sistema. Si no es así, instálalo antes de continuar. 
 3. **Ejecutar el script de instalación con permisos de administrador**:
    - Abre el directorio `/dist` del proyecto y ejecuta `instalador.bat`. Este script automatiza los siguientes pasos:
