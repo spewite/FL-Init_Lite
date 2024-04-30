@@ -119,6 +119,8 @@ def validate_project_name(name):
         return False
     return True
 
+def directory_exists(directory):
+    return os.path.exists(directory)
 
 # Función para descargar solo audio y convertirlo a MP3
 # Modificar la función de descarga para incluir la separación de stems
@@ -132,6 +134,13 @@ def download_video():
         
     if not validate_project_name(project_name):
         return 
+
+    project_path = os.path.join(project_location, project_name)
+    
+    # Verificar si el directorio de destino ya existe
+    if directory_exists(project_path):
+        messagebox.showerror("Error", f"El directorio de destino '{project_path}' ya existe. Por favor, elige un nombre de proyecto diferente o cambia la ubicación.")
+        return
 
     if not url or not project_location or not project_name:
         messagebox.showerror("Error", "Todos los campos son necesarios")
