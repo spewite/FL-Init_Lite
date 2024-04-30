@@ -40,7 +40,7 @@ pip install -r requirements.txt
 - **Ejecutar el archivo `fl_init.py`**: La opción más sencilla para ejecutar el programa es abriéndolo con el intérprete de python. Al ejecutar el programa, se abrirá una terminal donde se mostrarán las barras de progreso de la descarga y la separación de stems.
 - **Rellenar los campos**: Tendrás que introducir la URL de YouTube, la ubicación del proyecto, el nombre del proyecto y opcionalmente la plantilla .flp que deseas usar (si no se indica nada no creará el archivo .flp). Al rellenar todos los campos, podrás iniciar la descarga. También hay un checkbox opcional para que separe los stems. Ten en cuenta que este proceso utiliza IA (Demucs) y que la velocidad va a variar dependiendo de la GPU. En mi caso, un portátil con una gráfica integrada, me tarda 5 mins.
 - **Configuración de la ruta de las plantillas**: Si no te aparece ningún valor en el menú desplegable ten en cuenta que las plantillas las coge de la ruta que tengas en Configuración>Cambiar ubicación de las plantillas FLP.
-- **Descarga**: Cuando le das al botón “Descargar”, te creará el directorio que se indica en el label, donde estarán el archivo de FL Studio junto con el audio en formato mp3 (bajo el directorio `/assets`). Si has seleccionado la extracción de los stems, se guardarán en `assets/mdx_extra/`.
+- **Descarga**: Cuando le das al botón “Descargar”, te creará el directorio que se indica en el label, donde estarán el archivo de FL Studio junto con el audio en formato mp3 (bajo el directorio `/assets`). Si has seleccionado la extracción de los stems, se guardarán en `assets/mdx_extra/`. Ten en cuenta que no se creará ningún stem hasta que se terminen todos. 
 
 ## Contribuir
 
