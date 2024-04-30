@@ -1,9 +1,8 @@
 @echo off
 cls
 echo Activando el entorno virtual...
-call ..\venv\Scripts\activate
-
-echo Iniciando la aplicacion...
+call venv\Scripts\activate
+echo Iniciando la aplicación...
 cls
-python ..\src\fl_init.py
-
+python src\fl_init.py
+pause
