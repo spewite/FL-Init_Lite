@@ -49,3 +49,11 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 ## Contribuir
 
 Si deseas contribuir al proyecto, puedes enviar pull requests o abrir issues en este repositorio para sugerir mejoras o reportar errores.
+
+## Contacto
+
+Si tienes preguntas, comentarios o sugerencias, no dudes en ponerte en contacto conmigo:
+
+- GitHub: [spewite](https://github.com/spewite/)
+- Twitter: [@iizetaa](https://twitter.com/iizetaa))
+
