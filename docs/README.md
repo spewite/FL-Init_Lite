@@ -55,5 +55,5 @@ Si deseas contribuir al proyecto, puedes enviar pull requests o abrir issues en 
 Si tienes preguntas, comentarios o sugerencias, no dudes en ponerte en contacto conmigo:
 
 - GitHub: [spewite](https://github.com/spewite/)
-- Twitter: [@iizetaa](https://twitter.com/iizetaa))
+- Twitter: [@iizetaa](https://twitter.com/iizetaa)
 
