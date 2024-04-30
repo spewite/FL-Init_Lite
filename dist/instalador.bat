@@ -1,9 +1,9 @@
 @echo off
 cls
-echo Verificando instalación de Python...
+echo Verificando instalacion de Python...
 where python
 if %errorlevel% neq 0 (
-    echo Python no está instalado. Por favor instale Python antes de continuar.
+    echo Python no esta instalado. Por favor instale Python antes de continuar.
     pause
     exit
 )
@@ -29,4 +29,9 @@ echo Instalando dependencias...
 timeout /t 1 /nobreak >nul
 pip install -r ..\requirements.txt
 
-echo Iniciando
+cls
+
+echo Iniciando la aplicación...
+timeout /t 1 /nobreak >nul
+call python ..\src\fl_init.py
+
