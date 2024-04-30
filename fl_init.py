@@ -21,8 +21,9 @@ config_file = os.path.join(script_dir, 'settings.ini')
 # Cargar o crear configuración
 default_download_path = os.path.expanduser('~')
 
+# Si no encuentra el .ini, lo crea en el mismo directorio del .py
 if not os.path.exists(config_file):
-
+    
     config.add_section('PATHS')
     # Añadir múltiples entradas a la sección 'PATHS'
     config['PATHS']['download_path'] = default_download_path
@@ -35,6 +36,9 @@ if not os.path.exists(config_file):
     messagebox.showinfo("Archivo de Configuración No Encontrado",
                         "No se ha encontrado el archivo de configuración, lo cual podría indicar que la instalación es nueva o que el archivo ha sido eliminado.\n\n"
                         "Puedes cambiar los ajustes predeterminados desde el menú 'Archivo' en la barra de menús.")
+
+# Lee el archivo de configuración
+config.read(config_file)
 
 # Función para guardar la configuración
 def save_config():
@@ -52,7 +56,6 @@ def get_config(section, key, default_value):
         config.set(section, key, default_value)
         save_config()  # Guarda el cambio en el archivo de configuración
         return default_value
-
 
 # Ahora puedes acceder a la configuración de manera segura
 download_path = get_config('PATHS', 'download_path', os.path.expanduser('~'))
@@ -103,7 +106,7 @@ def separate_audio(file_path, output_dir, project_name):
     def run_separation():
         print("Proceso en curso", "Extracción de stems en progreso...")
         demucs.separate.main(args)
-        messagebox.showinfo(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
+        messagebox.showinfo(f"Separación terminada.", "La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
         print(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
     threading.Thread(target=run_separation).start()
 
