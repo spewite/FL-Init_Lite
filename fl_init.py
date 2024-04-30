@@ -107,14 +107,32 @@ def separate_audio(file_path, output_dir, project_name):
         print(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
     threading.Thread(target=run_separation).start()
 
+def validate_project_name(name):
+    # Caracteres no permitidos en Windows para nombres de carpetas y archivos
+    invalid_chars = '<>:"/\\|?*'
+    if any(char in invalid_chars for char in name):
+        messagebox.showerror("Nombre del Proyecto Inválido", "El nombre del proyecto contiene caracteres no permitidos por Windows.\n"
+                                                           "Los caracteres no permitidos son: <>:\"/\\|?*")
+        return False
+    if name.endswith('.') or name.endswith(' '):
+        messagebox.showerror("Nombre del Proyecto Inválido", "El nombre del proyecto no puede terminar con un punto o un espacio.")
+        return False
+    return True
+
+
 # Función para descargar solo audio y convertirlo a MP3
 # Modificar la función de descarga para incluir la separación de stems
 def download_video():
+    
+    # Validaciones de los inputs
     url = url_entry.get()
     project_location = location_entry.get()
     project_name = name_entry.get()
     separate_stems = separate_stems_var.get()
-    
+        
+    if not validate_project_name(project_name):
+        return 
+
     if not url or not project_location or not project_name:
         messagebox.showerror("Error", "Todos los campos son necesarios")
         return
@@ -264,6 +282,8 @@ tk.Label(input_frame, text="Nombre del Proyecto:").grid(row=2, column=0, sticky=
 name_entry = tk.Entry(input_frame, width=70)
 name_entry.grid(row=2, column=1, padx=10, pady=5)
 
+name_entry.bind('<KeyRelease>', lambda event: validate_project_name(name_entry.get()))
+
 # Botón para seleccionar la ubicación del proyecto
 browse_button = tk.Button(input_frame, text="Examinar", command=select_folder_temporal)
 browse_button.grid(row=1, column=2, padx=10, pady=5)
@@ -327,7 +347,7 @@ root.config(menu=menubar)
 
 # Menú Archivo
 file_menu = tk.Menu(menubar, tearoff=0)
-menubar.add_cascade(label="Archivo", menu=file_menu)
+menubar.add_cascade(label="Configuración", menu=file_menu)
 file_menu.add_command(label="Cambiar ubicación de salida por defecto", command=select_folder)
 file_menu.add_command(label="Cambiar ubicación de las plantillas FLP", command=select_template)
 
