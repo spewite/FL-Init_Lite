@@ -130,7 +130,6 @@ def download_video():
     url = url_entry.get()
     project_location = location_entry.get()
     project_name = name_entry.get()
-    separate_stems = separate_stems_var.get()
         
     if not validate_project_name(project_name):
         return 
@@ -139,11 +138,11 @@ def download_video():
     
     # Verificar si el directorio de destino ya existe
     if directory_exists(project_path):
-        messagebox.showerror("Error", f"El directorio de destino '{project_path}' ya existe. Por favor, elige un nombre de proyecto diferente o cambia la ubicación.")
+        messagebox.showinfo("Error", f"El directorio de destino '{project_path}' ya existe. Por favor, elige un nombre de proyecto diferente o cambia la ubicación.")
         return
 
     if not url or not project_location or not project_name:
-        messagebox.showerror("Error", "Todos los campos son necesarios")
+        messagebox.showinfo("Error", "Todos los campos son necesarios")
         return
     
     try:
@@ -165,15 +164,18 @@ def download_video():
         audio_clip.close()
         os.remove(audio_file_path)
         
-        if separate_stems:
+        # Verifica si el checkbox está marcado
+        if separate_stems_var.get() == 1: 
+            messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
+            print("Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (no te lo recomiendo, te va ir más lento).")
             separate_audio(mp3_path, project_location, project_name)
-        
+
         create_flp(project_path, project_name)
         open_folder(project_path)
 
-        messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
-        print("Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
-
+        messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Si quieres puedes crear otro.")
+        print("Se ha creado el proyecto. Si quieres puedes crear otro.")
+   
     except Exception as e:
         messagebox.showerror("Error", f"Error al descargar el audio: {str(e)}")
         print(f"Excepción al escribir el archivo de audio: {e}")  # Esto imprimirá en la consola si es posible.
@@ -181,6 +183,7 @@ def download_video():
 
 # Crear el proyecto de FL Studio
 def create_flp(project_path, project_name):
+    
     # Verificar si se ha seleccionado una plantilla antes de continuar
     template_name = template_combobox.get()
     if not template_name:
