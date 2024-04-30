@@ -17,7 +17,8 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 
 - Windows 10 o 11
 - Python (recomendable 3.7 o superior)
-- Las dependencias que se indican en `requirements.txt`: 
+- Las dependencias se indican en `requirements.txt`; no obstante, no te tienes que preocupar en la instalacion de los paquetes porque lo hace automaticamente el programa mediante un entorno virtual.
+- `requirements.txt`: 
   - `pytube==15.0.0`
   - `moviepy==1.0.3`
   - `pyflp==2.2.1`
@@ -27,17 +28,19 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 
 ## Instalación
 
-1. **Clonar el repositorio**: Descarga el repositorio y colócalo en un directorio fijo para evitar problemas de ruta entre el `fl_init.py` y el archivo `settings.ini`.
-2. **Instalar dependencias**: Asegúrate de instalar las dependencias necesarias listadas en `requirements.txt` ejecutando:
-```
-pip install -r requirements.txt
-```
-3. **Creación de Acceso Directo**: Es aconsejable crear un acceso directo del archivo `fl_init.py` en una ubicación conveniente para el usuario. Esto facilitará el uso del script y garantizará que el archivo `settings.ini` permanezca en el mismo directorio que el script de Python, evitando problemas de configuración.
-4. **Cambiar el Icono del Acceso Directo**: Puedes asignar el `icon.ico` incluido en el repositorio al acceso directo que crees para la aplicación. Esto dará una apariencia coherente y reconocible a tu acceso directo.
-
+1. **Clonar el repositorio**: Descarga el repositorio y colócalo en un directorio fijo para evitar problemas de ruta.
+2. **Tener Python instalado**: Asegúrate de tener Python instalado en tu sistema. Si no es así, instálalo antes de continuar. 
+3. **Ejecutar el script de instalación con permisos de administrador**:
+   - Abre el directorio `/dist` del proyecto y ejecuta `instalador.bat`. Este script automatiza los siguientes pasos:
+     - Verifica la instalación de Python en tu sistema.
+     - Crea y activa un entorno virtual en la carpeta `venv` si no existe.
+     - Instala las dependencias necesarias listadas en `requirements.txt`.
+     - Crea accesos directos en la raíz del proyecto y en el escritorio para facilitar el acceso al script.
+       
 ## Uso
 
-- **Ejecutar el archivo `fl_init.py`**: La opción más sencilla para ejecutar el programa es abriéndolo con el intérprete de python. Al ejecutar el programa, se abrirá una terminal donde se mostrarán las barras de progreso de la descarga y la separación de stems.
+- **Instalar la aplicación**: Como he dicho anteriormente, para instalar la aplicación tienes que ejecutar el archivo instalador.bat que se encuentra dentro de /dist. **Asegurate de tener permisos de administrador**.
+- **Ejecutar la aplicación**: Para abrir la aplicación tienes que usar el acceso directo creado en el escritorio, o en la raiz del repositorio. Al ejecutar el programa, se abrirá una terminal donde se mostrarán las barras de progreso de la descarga y la separación de stems junto con la interfaz gráfica para indicarle los parámetros.
 - **Rellenar los campos**: Tendrás que introducir la URL de YouTube, la ubicación del proyecto, el nombre del proyecto y opcionalmente la plantilla .flp que deseas usar (si no se indica nada no creará el archivo .flp). Al rellenar todos los campos, podrás iniciar la descarga. También hay un checkbox opcional para que separe los stems. Ten en cuenta que este proceso utiliza IA (Demucs) y que la velocidad va a variar dependiendo de la GPU. En mi caso, un portátil con una gráfica integrada, me tarda 5 mins.
 - **Configuración de la ruta de las plantillas**: Si no te aparece ningún valor en el menú desplegable ten en cuenta que las plantillas las coge de la ruta que tengas en Configuración>Cambiar ubicación de las plantillas FLP.
 - **Descarga**: Cuando le das al botón “Descargar”, te creará el directorio que se indica en el label, donde estarán el archivo de FL Studio junto con el audio en formato mp3 (bajo el directorio `/assets`). Si has seleccionado la extracción de los stems, se guardarán en `assets/mdx_extra/`. Ten en cuenta que no se creará ningún stem hasta que se terminen todos. 
