@@ -1,13 +1,13 @@
-import configparser
 import os
+import shlex
+import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+
+import configparser
 from pytube import YouTube
-from configparser import ConfigParser
 from moviepy.editor import AudioFileClip
 import pyflp
-import threading
-import shlex
 import demucs.separate  # Asegúrate de tener esta biblioteca instalada y configurada correctamente
 
 config = configparser.ConfigParser()
@@ -329,7 +329,7 @@ root.config(menu=menubar)
 file_menu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Archivo", menu=file_menu)
 file_menu.add_command(label="Cambiar ubicación de salida por defecto", command=select_folder)
-file_menu.add_command(label="Cambiar ubicación de la plantilla FLP", command=select_template)
+file_menu.add_command(label="Cambiar ubicación de las plantillas FLP", command=select_template)
 
 # Menú Ver
 view_menu = tk.Menu(menubar, tearoff=0)
