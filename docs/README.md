@@ -18,7 +18,7 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 - Windows 10 o 11
 - Python (recomendable 3.7 o superior)
 - 2GB de almacenamiento libre.
-- Las dependencias se indican en `requirements.txt`; no obstante, no te tienes que preocupar en la instalacion de los paquetes porque lo hace automaticamente el programa mediante un entorno virtual.
+- Las dependencias se indican en `requirements.txt`; no obstante, no te tienes que preocupar de la instalación de los paquetes, ya que lo hace automaticamente. Si no tienes instalado ningún paquete aún es normal que te tardee mucho en instalartelos, pero solo es una única vez. 
 - `requirements.txt`: 
   - `pytube==15.0.0`
   - `moviepy==1.0.3`
