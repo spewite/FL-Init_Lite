@@ -119,8 +119,18 @@ def validate_project_name(name):
         return False
     return True
 
+# Funcion que retorna si existe un directorio para evitar crear un proyecto.
 def directory_exists(directory):
     return os.path.exists(directory)
+
+# Limpiar los campos tras la creación del proyecto
+def clear_fields():
+    url_entry.delete(0, tk.END)
+    location_entry.delete(0, tk.END)
+    name_entry.delete(0, tk.END)
+    location_entry.insert(0, config['PATHS']['download_path'])  # Restablece a la ubicación de descarga predeterminada, si deseas mantener un valor predeterminado
+    output_path_label.config(text="Ruta de salida: ")  # Actualiza el label de la ruta de salida
+
 
 # Función para descargar solo audio y convertirlo a MP3
 # Modificar la función de descarga para incluir la separación de stems
@@ -164,17 +174,20 @@ def download_video():
         audio_clip.close()
         os.remove(audio_file_path)
         
+        create_flp(project_path, project_name)
+        open_folder(project_path)
+
         # Verifica si el checkbox está marcado
         if separate_stems_var.get() == 1: 
             messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (te va a ralentizar el otro).")
             print("Se ha creado el proyecto. Se acaba de iniciar el proceso de extraer los stems. Para ver el progreso mira la terminal. Si quieres puedes crear otro proyecto miestras tanto (no te lo recomiendo, te va ir más lento).")
             separate_audio(mp3_path, project_location, project_name)
+        else: 
+            messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Si quieres puedes crear otro.")
+            print("Se ha creado el proyecto. Si quieres puedes crear otro.")
 
-        create_flp(project_path, project_name)
-        open_folder(project_path)
-
-        messagebox.showinfo("Proyecto creado", "Se ha creado el proyecto. Si quieres puedes crear otro.")
-        print("Se ha creado el proyecto. Si quieres puedes crear otro.")
+        # Limpiar los campos 
+        clear_fields()
    
     except Exception as e:
         messagebox.showerror("Error", f"Error al descargar el audio: {str(e)}")
