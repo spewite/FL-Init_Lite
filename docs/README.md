@@ -13,6 +13,12 @@ FL INIT es un script en Python diseñado para simplificar la creación de proyec
 - **Separación de stems**: Ofrece la opción de separar los stems de la canción utilizando Demucs.
 - **Gestión de configuraciones**: Usa un archivo `settings.ini`, que se crea automáticamente si no existe, para establecer rutas predeterminadas de proyectos y la ruta de las plantillas .flp.
 
+**Cómo es la intefaz:**
+
+<p align="center">
+  <img src="/docs/captura-interfaz.png" alt="Intefaz FL Init" width="750""/>
+</p>
+
 ## Requisitos
 
 - Windows 10 o 11
@@ -34,7 +40,7 @@ FL INIT es un script en Python diseñado para simplificar la creación de proyec
 2. **Tener Python instalado**: Asegúrate de tener Python instalado en tu sistema. Si no es así, instálalo antes de continuar. 
 3. **Ejecutar el script de instalación con permisos de administrador**:
    - Abre el directorio `/dist` del proyecto y ejecuta `instalador.bat`. Este script automatiza los siguientes pasos:
-     - Verifica la instalación de Python en tu sistema.
+     - Verifica la instalación de Python y FFmpeg en tu sistema.
      - Crea y activa un entorno virtual en la carpeta `venv` si no existe.
      - Instala las dependencias necesarias listadas en `requirements.txt`.
      - Crea accesos directos en la raíz del proyecto y en el escritorio para facilitar el acceso al script.
