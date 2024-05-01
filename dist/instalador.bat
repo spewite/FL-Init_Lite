@@ -8,6 +8,14 @@ if %errorlevel% neq 0 (
     exit
 )
 
+echo Verificando instalacion de FFmpeg...
+where FFmpeg
+if %errorlevel% neq 0 (
+    echo FFmpeg no esta instalado. Por favor instale FFmpeg antes de continuar. Tienes documentación de cómo instalarlo en el README.
+    pause
+    exit
+)
+
 echo Creando entorno virtual...
 timeout /t 1 /nobreak >nul
 
