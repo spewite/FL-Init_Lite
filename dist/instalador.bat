@@ -11,7 +11,7 @@ if %errorlevel% neq 0 (
 echo Verificando instalacion de FFmpeg...
 where FFmpeg
 if %errorlevel% neq 0 (
-    echo FFmpeg no esta instalado. Por favor instale FFmpeg antes de continuar. Tienes documentación de cómo instalarlo en el README.
+    echo FFmpeg no esta instalado. Por favor instale FFmpeg antes de continuar. Tienes documentacion de como instalarlo en el README.
     pause
     exit
 )
