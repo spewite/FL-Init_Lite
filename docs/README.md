@@ -4,7 +4,7 @@
 
 # FL INIT
 
-FL INIT es un script en Python diseñado para facilitar la creación de proyectos en FL Studio a partir de canciones disponibles en YouTube. Este script automatiza el proceso de descarga de audio de YouTube y la configuración inicial de proyectos en FL Studio.
+FL INIT es un script en Python diseñado para simplificar la creación de proyectos en FL Studio utilizando canciones de YouTube. Este script automatiza la descarga de audio y facilita la configuración inicial de proyectos en FL Studio. Los usuarios pueden seleccionar una plantilla .flp específica para cada proyecto y, opcionalmente, extraer los stems de las canciones.
 
 ## Características
 
