@@ -18,6 +18,7 @@ FL INIT es un script en Python diseñado para facilitar la creación de proyecto
 - Windows 10 o 11
 - Python (recomendable 3.7 o superior)
 - 2GB de almacenamiento libre.
+- Tener FFmpeg instalado. [Página oficial de descarga](https://ffmpeg.org/download.html) [Tutorial de descarga](https://www.youtube.com/watch?v=DMEP82yrs5g)
 - Las dependencias se indican en `requirements.txt`; no obstante, no te tienes que preocupar de la instalación de los paquetes, ya que lo hace automaticamente. Si no tienes instalado ningún paquete aún es normal que te tardee mucho en instalartelos, pero solo es una única vez. 
 - `requirements.txt`: 
   - `pytube==15.0.0`
