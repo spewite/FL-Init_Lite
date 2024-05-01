@@ -106,7 +106,7 @@ def separate_audio(file_path, output_dir, project_name):
     def run_separation():
         print("Proceso en curso", "Extracción de stems en progreso...")
         demucs.separate.main(args)
-        messagebox.showinfo(f"Separación terminada.", "La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
+        messagebox.showinfo("Separación terminada.", f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
         print(f"La separación ha terminado. Los stems se han guardado en: {final_output_dir}")
     threading.Thread(target=run_separation).start()
 
